@@ -2,6 +2,7 @@ package manager;
 
 import io.ReadWriteFile;
 import model.Permission;
+import model.Product;
 import model.User;
 
 import java.util.ArrayList;
@@ -9,34 +10,45 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
-public class UserManager {
+public class CustomerManager {
     ProductManager productManager = new ProductManager();
     List<User> users = new ArrayList<>();
     static Scanner scanner = new Scanner(System.in);
 
-    //    tạo hàm show menu của Admin: đăng nhập, đăng ký, đăng xuất
-    public void showMenuAdmin() {
+    //    tạo hàm show menu của Customer: đăng nhập, đăng ký
+    public void showMenuCustomer() {
         int choice;
         while (true) {
-            System.out.println("Menu:\n1.Register\n2.Login\n3.Logout");
+            System.out.println("Menu:\n1. Xem sản phẩm\n2. Hiển thị sản phẩm sữa tắm\n3. Hiển thị sản phẩm bodymist\n4. Logout");
             System.out.print("Enter your choice: ");
             choice = Integer.parseInt(scanner.nextLine());
             switch (choice) {
                 case 1:
-                    register();
+                    productManager.showProduct();
                     break;
                 case 2:
-                    login();
+                    System.out.println("--------------------------< Shower Gel >---------------------------");
+                    productManager.showShowerGel();
                     break;
                 case 3:
+                    System.out.println("--------------------------< Body Mist >----------------------------");
+                    productManager.showBodyMist();
+                    break;
+                case 4:
+                    return;
 
             }
         }
     }
 
-    //    tạo hàm hiển thị danh sách admin
-    public void showAdmin() {
-        for (User user : users) {
+    //    tạo hàm hiển thị danh sách khách hàng
+    public void showCustomer() {
+        readUsers();
+        System.out.println("-------------------------------------------------");
+        System.out.printf("%-30s%-20s", "Email", "CustomerName");
+        System.out.println();
+        System.out.println("-------------------------------------------------");
+        for (User user: users) {
             System.out.println(user.toString());
         }
     }
@@ -44,7 +56,7 @@ public class UserManager {
     //  tạo hàm đăng ký
     public void register() {
         readUsers();
-        users.add(createAdmin());
+        users.add(createCustomer());
         writeUsers();
     }
 
@@ -74,7 +86,7 @@ public class UserManager {
             String password = inputString("[a-zA-Z0-9]+");
             if (checkLogin(name, password)) {
                 System.out.println("Đăng nhập thành công!");
-                productManager.showMenuProduct();
+                showMenuCustomer();
             }
             else System.out.println("Đăng nhập thất bại!");
         } else System.out.println("Không tồn tại tên tài khoản!Đăng nhập thất bại!");
@@ -120,7 +132,7 @@ public class UserManager {
         return line;
     }
 
-    public User createAdmin() {
+    public User createCustomer() {
 //        tạo đối tượng user là loại admin:
         System.out.printf("%-20s", "Nhập email đăng ký admin: ");
         // email, name, password
@@ -140,7 +152,7 @@ public class UserManager {
         System.out.printf("%-20s", "Nhập password đăng ký admin: ");
         String password = inputString("[a-zA-Z0-9]+");
         System.out.println("Đăng ký tài khoản admin thành công!");
-        return new User(email, name, password, Permission.ADMIN);
+        return new User(email, name, password, Permission.USER);
     }
 
 
