@@ -68,4 +68,5 @@ public class Product implements Serializable {
     public String toString() {
         return String.format("%-10s%-20s%-15s%-15s%-30s",id,name,volume,amount,price);
     }
+
 }

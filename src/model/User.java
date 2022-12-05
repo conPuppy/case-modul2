@@ -6,16 +6,14 @@ public class User implements Serializable {
     private String email;
     private String name;
     private String password;
-    private Permission permission;
 
     public User() {
     }
 
-    public User(String email, String name, String password, Permission permission) {
+    public User(String email, String name, String password) {
         this.email = email;
         this.name = name;
         this.password = password;
-        this.permission = permission;
     }
 
     public String getEmail() {
@@ -42,13 +40,7 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public Permission getPermission() {
-        return permission;
-    }
 
-    public void setPermission(Permission permission) {
-        this.permission = permission;
-    }
 
     @Override
     public String toString() {

@@ -1,8 +1,6 @@
 package manager;
 
 import io.ReadWriteFile;
-import model.Permission;
-import model.Product;
 import model.User;
 
 import java.util.ArrayList;
@@ -19,7 +17,7 @@ public class CustomerManager {
     public void showMenuCustomer() {
         int choice;
         while (true) {
-            System.out.println("Menu:\n1. Xem sản phẩm\n2. Hiển thị sản phẩm sữa tắm\n3. Hiển thị sản phẩm bodymist\n4. Logout");
+            System.out.println("Menu:\n1. Xem sản phẩm\n2. Hiển thị sản phẩm sữa tắm\n3. Hiển thị sản phẩm bodymist\n4. Lọc sản phẩm theo giá\n5. Logout");
             System.out.print("Enter your choice: ");
             choice = Integer.parseInt(scanner.nextLine());
             switch (choice) {
@@ -35,6 +33,9 @@ public class CustomerManager {
                     productManager.showBodyMist();
                     break;
                 case 4:
+                    showComparePrice();
+                    break;
+                case 5:
                     return;
 
             }
@@ -48,8 +49,28 @@ public class CustomerManager {
         System.out.printf("%-30s%-20s", "Email", "CustomerName");
         System.out.println();
         System.out.println("-------------------------------------------------");
-        for (User user: users) {
+        for (User user : users) {
             System.out.println(user.toString());
+        }
+    }
+    //    tạo hàm hiển thị lọc giá từ thấp đến cao và ngược lại:
+    public void showComparePrice() {
+        int choice;
+        while (true) {
+            System.out.println("Lọc sản phẩm theo giá:\n1. Giá từ thấp đến cao\n2. Giá từ cao xuống thấp\n3. Back");
+            choice = Integer.parseInt(scanner.nextLine());
+            switch (choice) {
+                case 1:
+                    System.out.println("--------------------------< Ascending Price >----------------------------");
+                    productManager.ascendingPrice();
+                    break;
+                case 2:
+                    System.out.println("--------------------------< Descending Price >----------------------------");
+                    productManager.descendingPrice();
+                    break;
+                default:
+                    return;
+            }
         }
     }
 
@@ -80,15 +101,14 @@ public class CustomerManager {
     public void login() {
         readUsers();
         System.out.printf("%-20s", "Nhập tên đăng nhập: ");
-        String name = inputString("[a-zA-Z]([a-zA-Z0-9])+");
+        String name = InputString.inputString("[a-zA-Z]([a-zA-Z0-9])+");
         if (findUserByName(name) != null) {
             System.out.printf("%-20s", "Nhập password đăng nhập: ");
-            String password = inputString("[a-zA-Z0-9]+");
+            String password = InputString.inputString("[a-zA-Z0-9]+");
             if (checkLogin(name, password)) {
                 System.out.println("Đăng nhập thành công!");
                 showMenuCustomer();
-            }
-            else System.out.println("Đăng nhập thất bại!");
+            } else System.out.println("Đăng nhập thất bại!");
         } else System.out.println("Không tồn tại tên tài khoản!Đăng nhập thất bại!");
     }
 
@@ -122,37 +142,28 @@ public class CustomerManager {
         return null;
     }
 
-    //  tạo hàm nhận dữ liệu người dùng nhập vào:
-    public static String inputString(String regex) {
-        String line = scanner.nextLine();
-        while (!line.matches(regex)) {
-            System.out.println("Nhập sai định dạng! Xin mời nhập lại.");
-            line = scanner.nextLine();
-        }
-        return line;
-    }
 
     public User createCustomer() {
-//        tạo đối tượng user là loại admin:
+//        tạo đối tượng user là khách hàng:
         System.out.printf("%-20s", "Nhập email đăng ký admin: ");
         // email, name, password
         String email;
         while (true) {
-            email = inputString("[a-zA-Z][a-zA-Z0-9]*@[a-zA-Z0-9](.[a-zA-Z0-9])+");
+            email = InputString.inputString("[a-zA-Z][a-zA-Z0-9]*@[a-zA-Z0-9](.[a-zA-Z0-9])+");
             if (findUserByEmail(email) == null) break;
             System.out.println("Email đã tồn tại, xin mời nhập lại!");
         }
         System.out.printf("%-20s", "Nhập tên đăng ký admin: ");
         String name;
         while (true) {
-            name = inputString("[a-zA-Z]([a-zA-Z0-9])+");
+            name = InputString.inputString("[a-zA-Z]([a-zA-Z0-9])+");
             if (findUserByName(name) == null) break;
             System.out.println("Name đã tồn tại, xin mời nhập lại!");
         }
         System.out.printf("%-20s", "Nhập password đăng ký admin: ");
-        String password = inputString("[a-zA-Z0-9]+");
+        String password =InputString.inputString("[a-zA-Z0-9]+");
         System.out.println("Đăng ký tài khoản admin thành công!");
-        return new User(email, name, password, Permission.USER);
+        return new User(email, name, password);
     }
 
 

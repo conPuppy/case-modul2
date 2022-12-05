@@ -3,15 +3,13 @@ package model;
 public class Admin {
     private String name = "admin";
     private String password = "1234";
-    private Permission permission = Permission.ADMIN;
 
     public Admin() {
     }
 
-    public Admin(String name, String password, Permission permission) {
+    public Admin(String name, String password) {
         this.name = name;
         this.password = password;
-        this.permission = permission;
     }
 
     public String getName() {
@@ -30,11 +28,4 @@ public class Admin {
         this.password = password;
     }
 
-    public Permission getPermission() {
-        return permission;
-    }
-
-    public void setPermission(Permission permission) {
-        this.permission = permission;
-    }
 }
