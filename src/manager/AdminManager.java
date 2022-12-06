@@ -32,8 +32,14 @@ public class AdminManager {
         customerManager = new CustomerManager();
         int choice;
         while (true) {
-            System.out.println("Menu Admin\n1. Thêm sản phẩm\n2. Xem danh sách sản phẩm\n3. Xoá sản phẩm" +
-                    "\n4. Sửa sản phẩm\n5. Xem danh sách khách hàng\n6. Đăng xuất");
+            System.out.println("""
+                    Menu Admin
+                    1. Thêm sản phẩm
+                    2. Xem danh sách sản phẩm
+                    3. Xoá sản phẩm
+                    4. Sửa sản phẩm
+                    5. Xem danh sách khách hàng
+                    6. Đăng xuất""");
             System.out.println("Nhập lựa chọn của admin:");
             choice = Integer.parseInt(scanner.nextLine());
             switch (choice) {
@@ -47,6 +53,7 @@ public class AdminManager {
                     productManager.deleteProduct();
                     break;
                 case 4:
+                    productManager.editProduct();
                     break;
                 case 5:
                     customerManager.showCustomer();

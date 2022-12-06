@@ -1,11 +1,14 @@
 package model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class User implements Serializable {
     private String email;
     private String name;
     private String password;
+    private List<Product> cart = new ArrayList<>();
 
     public User() {
     }
@@ -14,6 +17,14 @@ public class User implements Serializable {
         this.email = email;
         this.name = name;
         this.password = password;
+    }
+
+    public List<Product> getCart() {
+        return cart;
+    }
+
+    public void setCart(List<Product> cart) {
+        this.cart = cart;
     }
 
     public String getEmail() {

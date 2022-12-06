@@ -10,7 +10,7 @@ import model.comparatorbyprice.ComparatorPriceDescending;
 import java.util.*;
 
 public class ProductManager {
-    List<Product> products = new ArrayList<>();
+    static List<Product> products = new ArrayList<>();
     Scanner scanner = new Scanner(System.in);
 
     //    tạo hàm show danh sách sản phẩm:
@@ -38,17 +38,17 @@ public class ProductManager {
 //        tạo 1 mảng String để hứng nameSearch sau khi split
         String[] nameSearchAfterSplit = nameSearch.split(" ");
 //        tạo 1 chuỗi để hứng nameSearchAfterSplit sau khi nối lại không có dấu cách:
-        String str = "";
-        for (int i = 0; i < nameSearchAfterSplit.length; i++) {
-            if(nameSearchAfterSplit[i]!=null) str+= nameSearchAfterSplit[i];
+        StringBuilder str = new StringBuilder();
+        for (String s : nameSearchAfterSplit) {
+            if (s != null) str.append(s);
         }
 
 
 //        tạo mảng động chứa các mảng tên sau khi đã được split
         List<String[]> nameAfterSplit = new ArrayList<>();
 //        split được tên product thứ i nào thì add vào mảng nameAfterSplit
-        for (int i = 0; i < products.size(); i++) {
-            nameAfterSplit.add(products.get(i).getName().split(" "));
+        for (Product product : products) {
+            nameAfterSplit.add(product.getName().split(" "));
         }
 //        tạo 1 mảng String để chứa các tên sau khi nối lại không có dấu cách:
         String[] listName = new String[products.size()];
@@ -58,20 +58,20 @@ public class ProductManager {
         for (int i = 0; i < products.size(); i++) {
             // tạo 1 mảng String để hứng các phần tử trong mảng động nameAfterSplit
             String[] string = nameAfterSplit.get(i);
-            for (int j = 0; j < string.length; j++) {
-                if (string[j]!=null) listName[i] += string[j];
+            for (String s : string) {
+                if (s != null) listName[i] += s;
             }
         }
 
         for (int i = 0; i < listName.length; i++) {
-            if(str.equalsIgnoreCase(listName[i])) System.out.println(products.get(i).toString());
+            if (str.toString().equalsIgnoreCase(listName[i])) System.out.println(products.get(i).toString());
         }
 
     }
 
     //    tạo hàm tìm kiếm sản phẩm theo id cho admin:
-    public int searchProductById() {
-        String id = scanner.nextLine();
+    public int searchProductById(String id) {
+        readProduct();
         for (int i = 0; i < products.size(); i++) {
             if (id.equals(products.get(i).getId())) {
                 return i;
@@ -86,13 +86,83 @@ public class ProductManager {
         System.out.println("Nhập tên sản phẩm bạn muốn xoá:");
         searchProductByName();
         System.out.println("Nhập id sản phẩm bạn muốn xoá: ");
-        int index = searchProductById();
+        int index = searchProductById(scanner.nextLine());
         if (index >= 0) {
             products.remove(index);
             System.out.println("Đã xoá sản phẩm!");
         } else {
             System.out.println("Không tìm thấy ID sản phẩm!");
         }
+        writeProduct();
+    }
+
+    //    tạo hàm sửa sản phẩm:
+    public void editProduct() {
+        int choice;
+        while (true) {
+            System.out.println("1. Sửa tên sản phẩm\n2. Sửa giá sản phẩm\n3. Sửa số lượng sản phẩm\n4. Back");
+            choice = Integer.parseInt(scanner.nextLine());
+            switch (choice) {
+                case 1:
+                    editNameProduct();
+                    break;
+                case 2:
+                    editPriceProduct();
+                    break;
+                case 3:
+                    editAmountProduct();
+                    break;
+                default:
+                    return;
+            }
+        }
+    }
+
+    //    tạo hàm sửa tên sản phẩm:
+    public void editNameProduct() {
+        readProduct();
+        System.out.println("Nhập tên sản phẩm bạn muốn sửa tên: ");
+        searchProductByName();
+        System.out.println("Nhập ID sản phẩm bạn muốn sửa tên:");
+        int index = searchProductById(scanner.nextLine());
+        if (index >= 0) {
+            System.out.println("Nhập tên mới: ");
+            String name = scanner.nextLine();
+            products.get(index).setName(name);
+            System.out.println("Đã cập nhật tên sản phẩm!");
+        } else System.out.println("Không tìm sản phẩm!");
+        writeProduct();
+    }
+
+    //    tạo hàm sửa giá sản phẩm:
+    public void editPriceProduct() {
+        readProduct();
+        System.out.println("Nhập tên sản phẩm bạn muốn sửa giá: ");
+        searchProductByName();
+        System.out.println("Nhập ID sản phẩm bạn muốn sửa giá: ");
+        int index = searchProductById(scanner.nextLine());
+        if (index >= 0) {
+            System.out.println("Nhập giá mới: ");
+            double price = Double.parseDouble(scanner.nextLine());
+            products.get(index).setPrice(price);
+            System.out.println("Đã cập nhật giá sản phẩm!");
+        } else System.out.println("Không tìm thấy sản phẩm!");
+        writeProduct();
+    }
+
+    //    tạo hàm sửa số lượng sản phẩm:
+    public void editAmountProduct() {
+        readProduct();
+        System.out.println("Nhập tên sản phẩm bạn muốn sửa số lượng: ");
+        searchProductByName();
+        System.out.println("Nhập ID sản phẩm bạn muốn sửa số lượng: ");
+        int index = searchProductById(scanner.nextLine());
+        if (index >= 0) {
+            System.out.println("Nhập số lượng mới:");
+            int amount = Integer.parseInt(scanner.nextLine());
+            products.get(index).setAmount(amount);
+            System.out.println("Đã cập nhật số lượng sản phẩm!");
+        } else System.out.println("Không tìm thấy sản phẩm!");
         writeProduct();
     }
 

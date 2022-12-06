@@ -1,6 +1,7 @@
 package manager;
 
 import io.ReadWriteFile;
+import model.Product;
 import model.User;
 
 import java.util.ArrayList;
@@ -12,33 +13,77 @@ public class CustomerManager {
     ProductManager productManager = new ProductManager();
     List<User> users = new ArrayList<>();
     static Scanner scanner = new Scanner(System.in);
+    int index;
 
-    //    tạo hàm show menu của Customer: đăng nhập, đăng ký
+    //    tạo hàm show menu của Customer sau khi đăng nhập
     public void showMenuCustomer() {
         int choice;
         while (true) {
-            System.out.println("Menu:\n1. Xem sản phẩm\n2. Hiển thị sản phẩm sữa tắm\n3. Hiển thị sản phẩm bodymist\n4. Lọc sản phẩm theo giá\n5. Logout");
+            System.out.println("Menu:\n1. Xem sản phẩm\n2. Hiển thị sản phẩm sữa tắm\n3. Hiển thị sản phẩm bodymist\n4. Lọc sản phẩm theo giá\n5. Thêm sản phẩm vào giỏ hàng\n6. Xem giỏ hàng\n7. Logout");
             System.out.print("Enter your choice: ");
             choice = Integer.parseInt(scanner.nextLine());
             switch (choice) {
-                case 1:
-                    productManager.showProduct();
-                    break;
-                case 2:
+                case 1 -> productManager.showProduct();
+                case 2 -> {
                     System.out.println("--------------------------< Shower Gel >---------------------------");
                     productManager.showShowerGel();
-                    break;
-                case 3:
+                }
+                case 3 -> {
                     System.out.println("--------------------------< Body Mist >----------------------------");
                     productManager.showBodyMist();
-                    break;
-                case 4:
-                    showComparePrice();
-                    break;
-                case 5:
+                }
+                case 4 -> showComparePrice();
+                case 5 -> updateCart();
+                case 6 -> showCart();
+                default -> {
+                    writeUsers();
                     return;
-
+                }
             }
+        }
+    }
+
+
+    //    tạo hàm chọn sản phẩm vào giỏ hàng:
+    public Product pickProduct() {
+        System.out.println("Nhập ID sản phẩm muốn thêm vào giỏ hàng: ");
+        String id = scanner.nextLine();
+        int index = productManager.searchProductById(id);
+        if (index >= 0) {
+            System.out.println("Nhập số lượng muốn thêm vào giỏ hàng: ");
+            int number = Integer.parseInt(scanner.nextLine());
+            if(number<= ProductManager.products.get(index).getAmount()){
+                Product product = new Product(id, ProductManager.products.get(index).getName(), ProductManager.products.get(index).getVolume(), number, ProductManager.products.get(index).getPrice());
+                ProductManager.products.get(index).setAmount(ProductManager.products.get(index).getAmount()-product.getAmount());
+                return product;
+            } else {
+                System.out.println("Nhập quá số lượng sản phẩm còn trong kho!");
+                return null;
+            }
+
+        } else return null;
+    }
+
+
+    //    tạo hàm cập nhật giỏ hàng:
+    public void updateCart() {
+        readUsers();
+        productManager.readProduct();
+        User currentUser = users.get(index);
+        List<Product> productList = currentUser.getCart();
+        productList.add(pickProduct());
+        currentUser.setCart(productList);
+        for (int i = 0; i < currentUser.getCart().size(); i++) {
+            System.out.println(currentUser.getCart().get(i).toString());
+        }
+        writeUsers();
+        productManager.writeProduct();
+    }
+
+    public void showCart() {
+        readUsers();
+        for (int i = 0; i < (users.get(index).getCart().size()); i++) {
+            System.out.println(users.get(index).getCart().get(i).toString());
         }
     }
 
@@ -53,6 +98,7 @@ public class CustomerManager {
             System.out.println(user.toString());
         }
     }
+
     //    tạo hàm hiển thị lọc giá từ thấp đến cao và ngược lại:
     public void showComparePrice() {
         int choice;
@@ -114,8 +160,9 @@ public class CustomerManager {
 
     //    tạo hàm check tài khoản đăng nhập
     public boolean checkLogin(String name, String password) {
-        for (User user : users) {
-            if (name.equals(user.getName()) && password.equals(user.getPassword())) {
+        for (int i = 0; i < users.size(); i++) {
+            if (name.equals(users.get(i).getName()) && password.equals(users.get(i).getPassword())) {
+                index = i;
                 return true;
             }
         }
@@ -145,7 +192,7 @@ public class CustomerManager {
 
     public User createCustomer() {
 //        tạo đối tượng user là khách hàng:
-        System.out.printf("%-20s", "Nhập email đăng ký admin: ");
+        System.out.printf("%-20s", "Nhập email đăng ký tài khoản: ");
         // email, name, password
         String email;
         while (true) {
@@ -153,16 +200,16 @@ public class CustomerManager {
             if (findUserByEmail(email) == null) break;
             System.out.println("Email đã tồn tại, xin mời nhập lại!");
         }
-        System.out.printf("%-20s", "Nhập tên đăng ký admin: ");
+        System.out.printf("%-20s", "Nhập tên đăng ký tài khoản: ");
         String name;
         while (true) {
             name = InputString.inputString("[a-zA-Z]([a-zA-Z0-9])+");
             if (findUserByName(name) == null) break;
             System.out.println("Name đã tồn tại, xin mời nhập lại!");
         }
-        System.out.printf("%-20s", "Nhập password đăng ký admin: ");
-        String password =InputString.inputString("[a-zA-Z0-9]+");
-        System.out.println("Đăng ký tài khoản admin thành công!");
+        System.out.printf("%-20s", "Nhập password đăng ký tài khoản: ");
+        String password = InputString.inputString("[a-zA-Z0-9]+");
+        System.out.println("Đăng ký tài khoản khách hàng thành công!");
         return new User(email, name, password);
     }
 
