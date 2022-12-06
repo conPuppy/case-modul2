@@ -14,6 +14,29 @@ public class ProductManager {
     Scanner scanner = new Scanner(System.in);
 
     //    tạo hàm show danh sách sản phẩm:
+    public void showTypeProduct() {
+        int choice;
+        while (true) {
+            System.out.println("Type Product:\n1. All Product\n2. Shower Gel\n3. Body Mist\n4. Back");
+            choice = Integer.parseInt(scanner.nextLine());
+            switch (choice) {
+                case 1:
+                    showProduct();
+                    break;
+                case 2:
+                    System.out.println("--------------------------< Shower Gel >---------------------------");
+                    showShowerGel();
+                    break;
+                case 3:
+                    System.out.println("--------------------------< Body Mist >----------------------------");
+                    showBodyMist();
+                    break;
+                default:
+                    return;
+            }
+        }
+    }
+
     public void showProduct() {
         readProduct();
         System.out.println("----------------------------------------------------------------------");
@@ -22,6 +45,25 @@ public class ProductManager {
         System.out.println("----------------------------------------------------------------------");
         for (Product product : products) {
             System.out.println(product.toString());
+        }
+    }
+
+    //    hiển thị sản phẩm theo loại sữa tắm:
+    public void showShowerGel() {
+        readProduct();
+        for (Product product : products) {
+            if (product instanceof ShowerGel)
+                System.out.println(product);
+        }
+    }
+
+    //    hiển thị sản phẩm theo loại bodymist:
+    public void showBodyMist() {
+        readProduct();
+        for (Product product : products) {
+            if (product instanceof BodyMist) {
+                System.out.println(product);
+            }
         }
     }
 
@@ -64,7 +106,8 @@ public class ProductManager {
         }
 
         for (int i = 0; i < listName.length; i++) {
-            if (str.toString().equalsIgnoreCase(listName[i])) System.out.println(products.get(i).toString());
+            if (listName[i].toLowerCase().contains(str.toString().toLowerCase()))
+                System.out.println(products.get(i).toString());
         }
 
     }
@@ -184,21 +227,32 @@ public class ProductManager {
         }
     }
 
-    //    hiển thị sản phẩm theo loại sữa tắm:
-    public void showShowerGel() {
+    //    tạo hàm lọc các sản phẩm có giá dưới 100k:
+    public void lowerPrice() {
         readProduct();
         for (Product product : products) {
-            if (product instanceof ShowerGel)
-                System.out.println(product);
+            if (product.getPrice() < 100) {
+                System.out.println(product.toString());
+            }
         }
     }
 
-    //    hiển thị sản phẩm theo loại bodymist:
-    public void showBodyMist() {
+    //    tạo hàm lọc các sản phẩm có giá từ 100k - 300k
+    public void betweenPrice() {
         readProduct();
         for (Product product : products) {
-            if (product instanceof BodyMist) {
-                System.out.println(product);
+            if (product.getPrice() >= 100 && product.getPrice() <= 300) {
+                System.out.println(product.toString());
+            }
+        }
+    }
+
+    //    tạo hàm lọc các sản phẩm có giá lớn hơn 300k:
+    public void higherPrice() {
+        readProduct();
+        for (Product product : products) {
+            if (product.getPrice() > 300) {
+                System.out.println(product.toString());
             }
         }
     }

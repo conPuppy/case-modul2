@@ -19,22 +19,18 @@ public class CustomerManager {
     public void showMenuCustomer() {
         int choice;
         while (true) {
-            System.out.println("Menu:\n1. Xem sản phẩm\n2. Hiển thị sản phẩm sữa tắm\n3. Hiển thị sản phẩm bodymist\n4. Lọc sản phẩm theo giá\n5. Thêm sản phẩm vào giỏ hàng\n6. Xem giỏ hàng\n7. Logout");
+            System.out.println("Menu:\n1. Xem sản phẩm\n2. Xem sản phẩm theo giá\n3. Tìm kiếm sản phẩm theo tên\n4. Thêm sản phẩm vào giỏ hàng\n5. Xem giỏ hàng\n6. Logout");
             System.out.print("Enter your choice: ");
             choice = Integer.parseInt(scanner.nextLine());
             switch (choice) {
-                case 1 -> productManager.showProduct();
-                case 2 -> {
-                    System.out.println("--------------------------< Shower Gel >---------------------------");
-                    productManager.showShowerGel();
-                }
+                case 1 -> productManager.showTypeProduct();
+                case 2 -> showComparePrice();
                 case 3 -> {
-                    System.out.println("--------------------------< Body Mist >----------------------------");
-                    productManager.showBodyMist();
+                    System.out.println("Nhập tên sản phẩm muốn tìm: ");
+                    productManager.searchProductByName();
                 }
-                case 4 -> showComparePrice();
-                case 5 -> updateCart();
-                case 6 -> showCart();
+                case 4 -> updateCart();
+                case 5 -> showCart();
                 default -> {
                     writeUsers();
                     return;
@@ -42,7 +38,6 @@ public class CustomerManager {
             }
         }
     }
-
 
     //    tạo hàm chọn sản phẩm vào giỏ hàng:
     public Product pickProduct() {
@@ -52,9 +47,9 @@ public class CustomerManager {
         if (index >= 0) {
             System.out.println("Nhập số lượng muốn thêm vào giỏ hàng: ");
             int number = Integer.parseInt(scanner.nextLine());
-            if(number<= ProductManager.products.get(index).getAmount()){
+            if (number <= ProductManager.products.get(index).getAmount()) {
                 Product product = new Product(id, ProductManager.products.get(index).getName(), ProductManager.products.get(index).getVolume(), number, ProductManager.products.get(index).getPrice());
-                ProductManager.products.get(index).setAmount(ProductManager.products.get(index).getAmount()-product.getAmount());
+                ProductManager.products.get(index).setAmount(ProductManager.products.get(index).getAmount() - product.getAmount());
                 return product;
             } else {
                 System.out.println("Nhập quá số lượng sản phẩm còn trong kho!");
@@ -80,6 +75,7 @@ public class CustomerManager {
         productManager.writeProduct();
     }
 
+    //  hàm hiển thị giỏ hàng:
     public void showCart() {
         readUsers();
         for (int i = 0; i < (users.get(index).getCart().size()); i++) {
@@ -103,7 +99,15 @@ public class CustomerManager {
     public void showComparePrice() {
         int choice;
         while (true) {
-            System.out.println("Lọc sản phẩm theo giá:\n1. Giá từ thấp đến cao\n2. Giá từ cao xuống thấp\n3. Back");
+            System.out.println("""
+                    Lọc sản phẩm theo giá:
+                    1. Các sản phẩm có giá từ thấp đến cao
+                    2. Các sản phẩm có giá từ cao xuống thấp
+                    3. Giá thấp hơn 100k
+                    4. Giá từ 100k đến 300k
+                    5. Giá lớn hơn 300k
+                    6. Back
+                    """);
             choice = Integer.parseInt(scanner.nextLine());
             switch (choice) {
                 case 1:
@@ -113,6 +117,18 @@ public class CustomerManager {
                 case 2:
                     System.out.println("--------------------------< Descending Price >----------------------------");
                     productManager.descendingPrice();
+                    break;
+                case 3:
+                    System.out.println("--------------------------< Lower than 100k Price >----------------------------");
+                    productManager.lowerPrice();
+                    break;
+                case 4:
+                    System.out.println("--------------------------< Between 100k and 300k Price >----------------------------");
+                    productManager.betweenPrice();
+                    break;
+                case 5:
+                    System.out.println("--------------------------< Higher than 300k Price >----------------------------");
+                    productManager.higherPrice();
                     break;
                 default:
                     return;
@@ -125,6 +141,44 @@ public class CustomerManager {
         readUsers();
         users.add(createCustomer());
         writeUsers();
+    }
+
+    //    tạo hàm đăng nhập
+    public void login() {
+        readUsers();
+        System.out.printf("%-20s", "Nhập tên đăng nhập: ");
+        String name = InputString.inputString("[a-zA-Z]([a-zA-Z0-9])+");
+        if (findUserByName(name) != null) {
+            System.out.printf("%-20s", "Nhập password đăng nhập: ");
+            String password = InputString.inputString("[a-zA-Z0-9]+");
+            if (checkLogin(name, password)) {
+                System.out.println("Đăng nhập thành công!");
+                showMenuCustomer();
+            } else System.out.println("Đăng nhập thất bại!");
+        } else System.out.println("Không tồn tại tên tài khoản!Đăng nhập thất bại!");
+    }
+
+    public User createCustomer() {
+//        tạo đối tượng user là khách hàng:
+        System.out.printf("%-20s", "Nhập email đăng ký tài khoản: ");
+        // email, name, password
+        String email;
+        while (true) {
+            email = InputString.inputString("[a-zA-Z][a-zA-Z0-9]*@[a-zA-Z0-9](.[a-zA-Z0-9])+");
+            if (findUserByEmail(email) == null) break;
+            System.out.println("Email đã tồn tại, xin mời nhập lại!");
+        }
+        System.out.printf("%-20s", "Nhập tên đăng ký tài khoản: ");
+        String name;
+        while (true) {
+            name = InputString.inputString("[a-zA-Z]([a-zA-Z0-9])+");
+            if (findUserByName(name) == null) break;
+            System.out.println("Name đã tồn tại, xin mời nhập lại!");
+        }
+        System.out.printf("%-20s", "Nhập password đăng ký tài khoản: ");
+        String password = InputString.inputString("[a-zA-Z0-9]+");
+        System.out.println("Đăng ký tài khoản khách hàng thành công!");
+        return new User(email, name, password);
     }
 
     //  hàm viết dữ liệu đăng kí tài khoản vào file:
@@ -143,20 +197,6 @@ public class CustomerManager {
         }
     }
 
-    //    tạo hàm đăng nhập
-    public void login() {
-        readUsers();
-        System.out.printf("%-20s", "Nhập tên đăng nhập: ");
-        String name = InputString.inputString("[a-zA-Z]([a-zA-Z0-9])+");
-        if (findUserByName(name) != null) {
-            System.out.printf("%-20s", "Nhập password đăng nhập: ");
-            String password = InputString.inputString("[a-zA-Z0-9]+");
-            if (checkLogin(name, password)) {
-                System.out.println("Đăng nhập thành công!");
-                showMenuCustomer();
-            } else System.out.println("Đăng nhập thất bại!");
-        } else System.out.println("Không tồn tại tên tài khoản!Đăng nhập thất bại!");
-    }
 
     //    tạo hàm check tài khoản đăng nhập
     public boolean checkLogin(String name, String password) {
@@ -187,30 +227,6 @@ public class CustomerManager {
             }
         }
         return null;
-    }
-
-
-    public User createCustomer() {
-//        tạo đối tượng user là khách hàng:
-        System.out.printf("%-20s", "Nhập email đăng ký tài khoản: ");
-        // email, name, password
-        String email;
-        while (true) {
-            email = InputString.inputString("[a-zA-Z][a-zA-Z0-9]*@[a-zA-Z0-9](.[a-zA-Z0-9])+");
-            if (findUserByEmail(email) == null) break;
-            System.out.println("Email đã tồn tại, xin mời nhập lại!");
-        }
-        System.out.printf("%-20s", "Nhập tên đăng ký tài khoản: ");
-        String name;
-        while (true) {
-            name = InputString.inputString("[a-zA-Z]([a-zA-Z0-9])+");
-            if (findUserByName(name) == null) break;
-            System.out.println("Name đã tồn tại, xin mời nhập lại!");
-        }
-        System.out.printf("%-20s", "Nhập password đăng ký tài khoản: ");
-        String password = InputString.inputString("[a-zA-Z0-9]+");
-        System.out.println("Đăng ký tài khoản khách hàng thành công!");
-        return new User(email, name, password);
     }
 
 

@@ -47,7 +47,7 @@ public class AdminManager {
                     productManager.addProduct();
                     break;
                 case 2:
-                    showTypeProduct();
+                    productManager.showTypeProduct();
                     break;
                 case 3:
                     productManager.deleteProduct();
@@ -59,30 +59,6 @@ public class AdminManager {
                     customerManager.showCustomer();
                     break;
                 case 6:
-                    return;
-            }
-        }
-    }
-
-    //    tạo hàm hiển thị menu sắp xếp sản phẩm theo loại:
-    public void showTypeProduct() {
-        int choice;
-        while (true) {
-            System.out.println("Type Product:\n1. All Product\n2. Shower Gel\n3. Body Mist\n4. Back");
-            choice = Integer.parseInt(scanner.nextLine());
-            switch (choice) {
-                case 1:
-                    productManager.showProduct();
-                    break;
-                case 2:
-                    System.out.println("--------------------------< Shower Gel >---------------------------");
-                    productManager.showShowerGel();
-                    break;
-                case 3:
-                    System.out.println("--------------------------< Body Mist >----------------------------");
-                    productManager.showBodyMist();
-                    break;
-                default:
                     return;
             }
         }
