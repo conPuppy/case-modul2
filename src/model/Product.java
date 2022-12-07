@@ -63,10 +63,14 @@ public class Product implements Serializable {
     public void setPrice(double price) {
         this.price = price;
     }
+    public String covertPrice(double price) {
+        String covertPrice = String.format("%.0f VND", price);
+        return covertPrice;
+    }
 
     @Override
     public String toString() {
-        return String.format("%-10s%-20s%-15s%-15s%-30s",id,name,volume,amount,price);
+        return String.format("%45s%-10s%-20s%-15s%-15s%-30s","",id,name,volume,amount,covertPrice(getPrice()));
     }
 
 }

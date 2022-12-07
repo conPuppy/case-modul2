@@ -9,6 +9,7 @@ public class User implements Serializable {
     private String name;
     private String password;
     private List<Product> cart = new ArrayList<>();
+    private Double bill = 0.0;
 
     public User() {
     }
@@ -17,6 +18,14 @@ public class User implements Serializable {
         this.email = email;
         this.name = name;
         this.password = password;
+    }
+
+    public Double getBill() {
+        return bill;
+    }
+
+    public void setBill(Double bill) {
+        this.bill = bill;
     }
 
     public List<Product> getCart() {
@@ -50,7 +59,6 @@ public class User implements Serializable {
     public void setPassword(String password) {
         this.password = password;
     }
-
 
 
     @Override

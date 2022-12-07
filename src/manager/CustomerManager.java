@@ -15,26 +15,32 @@ public class CustomerManager {
     static Scanner scanner = new Scanner(System.in);
     int index;
 
+
     //    tạo hàm show menu của Customer sau khi đăng nhập
     public void showMenuCustomer() {
         int choice;
         while (true) {
-            System.out.println("Menu:\n1. Xem sản phẩm\n2. Xem sản phẩm theo giá\n3. Tìm kiếm sản phẩm theo tên\n4. Thêm sản phẩm vào giỏ hàng\n5. Xem giỏ hàng\n6. Logout");
-            System.out.print("Enter your choice: ");
-            choice = Integer.parseInt(scanner.nextLine());
-            switch (choice) {
-                case 1 -> productManager.showTypeProduct();
-                case 2 -> showComparePrice();
-                case 3 -> {
-                    System.out.println("Nhập tên sản phẩm muốn tìm: ");
-                    productManager.searchProductByName();
+            try {
+                System.out.println("Menu:\n1. Xem sản phẩm theo loại\n2. Xem sản phẩm theo giá\n3. Tìm kiếm sản phẩm theo tên" +
+                        "\n4. Thêm sản phẩm vào giỏ hàng\n5. Xem giỏ hàng\n6. Logout");
+                System.out.print("Enter your choice: ");
+                choice = Integer.parseInt(scanner.nextLine());
+                switch (choice) {
+                    case 1 -> productManager.showTypeProduct();
+                    case 2 -> showComparePrice();
+                    case 3 -> {
+                        System.out.println("Nhập tên sản phẩm muốn tìm: ");
+                        productManager.searchProductByName();
+                    }
+                    case 4 -> updateCart();
+                    case 5 -> showCart();
+                    default -> {
+                        writeUsers();
+                        return;
+                    }
                 }
-                case 4 -> updateCart();
-                case 5 -> showCart();
-                default -> {
-                    writeUsers();
-                    return;
-                }
+            } catch (Exception e) {
+                System.err.println("Nhập số đê!");
             }
         }
     }
@@ -68,9 +74,11 @@ public class CustomerManager {
         List<Product> productList = currentUser.getCart();
         productList.add(pickProduct());
         currentUser.setCart(productList);
+        double bill = currentUser.getBill();
         for (int i = 0; i < currentUser.getCart().size(); i++) {
-            System.out.println(currentUser.getCart().get(i).toString());
+            currentUser.setBill(bill += currentUser.getCart().get(i).getPrice() * currentUser.getCart().get(i).getAmount());
         }
+        System.out.println("Đã cập nhật giỏ hàng thành công!");
         writeUsers();
         productManager.writeProduct();
     }
@@ -78,9 +86,24 @@ public class CustomerManager {
     //  hàm hiển thị giỏ hàng:
     public void showCart() {
         readUsers();
+        System.out.printf("%75s%s", "", "My Cart");
+        System.out.println();
+        System.out.printf("%45s%s", "", "------------------------------------------------------------------");
+        System.out.println();
+        System.out.printf("%45s%-10s%-20s%-15s%-15s%-30s", "", "ID", "Name", "Volume (ml) ", "Amount", "Price");
+        System.out.println();
+        System.out.printf("%45s%s", "", "------------------------------------------------------------------");
+        System.out.println();
         for (int i = 0; i < (users.get(index).getCart().size()); i++) {
             System.out.println(users.get(index).getCart().get(i).toString());
         }
+        String convertBill = String.format("%.0f VND", users.get(index).getBill());
+        System.out.printf("%45s%s", "", "------------------------------------------------------------------");
+        System.out.println();
+        System.out.printf("%75s%2s", "Total:", convertBill);
+        System.out.println();
+        System.out.printf("%45s%s", "", "------------------------------------------------------------------");
+        System.out.println();
     }
 
     //    tạo hàm hiển thị danh sách khách hàng
@@ -99,39 +122,38 @@ public class CustomerManager {
     public void showComparePrice() {
         int choice;
         while (true) {
-            System.out.println("""
-                    Lọc sản phẩm theo giá:
-                    1. Các sản phẩm có giá từ thấp đến cao
-                    2. Các sản phẩm có giá từ cao xuống thấp
-                    3. Giá thấp hơn 100k
-                    4. Giá từ 100k đến 300k
-                    5. Giá lớn hơn 300k
-                    6. Back
-                    """);
-            choice = Integer.parseInt(scanner.nextLine());
-            switch (choice) {
-                case 1:
-                    System.out.println("--------------------------< Ascending Price >----------------------------");
-                    productManager.ascendingPrice();
-                    break;
-                case 2:
-                    System.out.println("--------------------------< Descending Price >----------------------------");
-                    productManager.descendingPrice();
-                    break;
-                case 3:
-                    System.out.println("--------------------------< Lower than 100k Price >----------------------------");
-                    productManager.lowerPrice();
-                    break;
-                case 4:
-                    System.out.println("--------------------------< Between 100k and 300k Price >----------------------------");
-                    productManager.betweenPrice();
-                    break;
-                case 5:
-                    System.out.println("--------------------------< Higher than 300k Price >----------------------------");
-                    productManager.higherPrice();
-                    break;
-                default:
-                    return;
+            try {
+                System.out.println("""
+                        Lọc sản phẩm theo giá:
+                        1. Các sản phẩm có giá từ thấp đến cao
+                        2. Các sản phẩm có giá từ cao xuống thấp
+                        3. Giá thấp hơn 100k
+                        4. Giá từ 100k đến 300k
+                        5. Giá lớn hơn 300k
+                        6. Back
+                        """);
+                choice = Integer.parseInt(scanner.nextLine());
+                switch (choice) {
+                    case 1:
+                        productManager.ascendingPrice();
+                        break;
+                    case 2:
+                        productManager.descendingPrice();
+                        break;
+                    case 3:
+                        productManager.lowerPrice();
+                        break;
+                    case 4:
+                        productManager.betweenPrice();
+                        break;
+                    case 5:
+                        productManager.higherPrice();
+                        break;
+                    default:
+                        return;
+                }
+            } catch (Exception e) {
+                System.err.println("Nhập số đi nha!");
             }
         }
     }
