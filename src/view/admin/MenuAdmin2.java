@@ -1,7 +1,6 @@
 package view.admin;
 
 import manager.CustomerManager;
-import manager.ProductManager;
 
 import java.util.Scanner;
 
@@ -13,7 +12,7 @@ public class MenuAdmin2 {
         int choice;
         while (true) {
             try {
-                System.out.println("Menu Quản lý Khách hàng\n1. Xem danh sách khách hàng\n2. Xoá tài khoản khách hàng\n3. Xem khách hàng tiềm năng\n4. Back");
+                System.out.println("Menu Quản lý Khách hàng\n1. Xem danh sách khách hàng\n2. Xoá tài khoản khách hàng\n3. Xem top 3 khách hàng tiềm năng\n4. Back");
                 System.out.println("Nhập lựa chọn của admin:");
                 choice = Integer.parseInt(scanner.nextLine());
                 switch (choice) {
@@ -24,7 +23,7 @@ public class MenuAdmin2 {
                         customerManager.deleteCustomer();
                         break;
                     case 3:
-                        customerManager.showVipCustomer();
+                        customerManager.showTop3VipCustomer();
                     default:
                         return;
                 }

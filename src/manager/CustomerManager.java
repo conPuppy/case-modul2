@@ -3,12 +3,10 @@ package manager;
 import io.ReadWriteFile;
 import model.Product;
 import model.User;
+import model.comparatorbybill.ComparatorBill;
 import view.customer.MenuCustomer;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class CustomerManager {
     ProductManager productManager = new ProductManager();
@@ -151,32 +149,30 @@ public class CustomerManager {
     //    tạo hàm cập nhật giỏ hàng:
     public void updateCart() {
         readUsers();
+        double bill;
         productManager.readProduct();
         User currentUser = users.get(index);
         System.out.println(index);
         List<Product> productList = currentUser.getCart();
         productList.add(pickProduct());
         currentUser.setCart(productList);
-        double bill = currentUser.getBill();
-        for (int i = 0; i < currentUser.getCart().size(); i++) {
-            currentUser.setBill(bill += currentUser.getCart().get(i).getPrice() * currentUser.getCart().get(i).getAmount());
+        try {
+            bill = currentUser.getBill();
+            for (int i = 0; i < currentUser.getCart().size(); i++) {
+                currentUser.setBill(bill += currentUser.getCart().get(i).getPrice() * currentUser.getCart().get(i).getAmount());
+            }
+            System.out.println("Đã cập nhật giỏ hàng thành công!");
+            writeUsers();
+            productManager.writeProduct();
+        } catch (NullPointerException e) {
+            System.out.println("Cập nhật giỏ hàng thất bại!");
         }
-        System.out.println("Đã cập nhật giỏ hàng thành công!");
-        writeUsers();
-        productManager.writeProduct();
     }
 
     //  hàm hiển thị giỏ hàng:
     public void showCart() {
         readUsers();
-        System.out.printf("%75s%s", "", "My Cart");
-        System.out.println();
-        System.out.printf("%45s%s", "", "----------------------------------------------------------------------");
-        System.out.println();
-        System.out.printf("%45s%-10s%-20s%-15s%-15s%-30s", "", "ID", "Name", "Volume (ml) ", "Amount", "Price");
-        System.out.println();
-        System.out.printf("%45s%s", "", "----------------------------------------------------------------------");
-        System.out.println();
+        formCart();
         for (int i = 0; i < (users.get(index).getCart().size()); i++) {
             System.out.println(users.get(index).getCart().get(i).toString());
         }
@@ -188,39 +184,63 @@ public class CustomerManager {
         System.out.printf("%45s%s", "", "----------------------------------------------------------------------");
         System.out.println();
     }
-    //    tạo hàm tìm khách hàng tiềm năng(có tổng bill lớn nhất):
-    public void showVipCustomer() {
-        readUsers();
-        int a = 0;
-        double max = users.get(0).getBill();
-        for (int i = 0; i < users.size(); i++) {
-            if(users.get(i).getBill()>max) {
-                max = users.get(i).getBill();
-            }
-        }
+    public void formCart() {
+        System.out.printf("%75s%s", "", users.get(index).getName() + "'s" + " Cart");
+        System.out.println();
+        System.out.printf("%45s%s", "", "----------------------------------------------------------------------");
+        System.out.println();
+        System.out.printf("%45s%-10s%-20s%-15s%-15s%-30s", "", "ID", "Name", "Volume (ml) ", "Amount", "Price");
+        System.out.println();
+        System.out.printf("%45s%s", "", "----------------------------------------------------------------------");
+        System.out.println();
+    }
 
-        for (int i = 0; i < users.size(); i++) {
-            if(max==users.get(i).getBill()) {
-                a = i;
-            }
+    //    tạo hàm tìm khách hàng tiềm năng(có tổng bill lớn nhất):
+    public void showTop3VipCustomer() {
+        readUsers();
+        users.sort(new ComparatorBill());
+        System.out.printf("%91s","Top 3 khách hàng mua hàng nhiều nhất");
+        System.out.println();
+        System.out.printf("%45s%s", "", "-------------------------------------------------------");
+        System.out.println();
+        System.out.printf("%48s%20s%20s","Top","CustomerName","Bill");
+        System.out.println();
+        System.out.printf("%45s%s", "", "-------------------------------------------------------");
+        System.out.println();
+        for (int i = 0; i < 3; i++) {
+            System.out.printf("%47s%15s%31s",(i+1),users.get(i).getName(),users.get(i).getBill());
+            System.out.println();
         }
-        System.out.println(users.get(a).getName()+" là khách hàng tiềm năng với tổng bill lớn nhất trong các khách hàng là: " + String.format("%.0f VND", max));
+        System.out.printf("%45s%s", "", "-------------------------------------------------------");
+        System.out.println();
+    }
+//    tạo hàm tính tổng doanh thu:
+    public void turnover() {
+        readUsers();
+        double sum = 0.0;
+        for (int i = 1; i < users.size()-1; i++) {
+            sum += users.get(i).getBill();
+        }
+        System.out.println(" Tổng doanh thu đạt được: "+ String.format("%.0f VND", sum) );
     }
 
     //    tạo hàm hiển thị danh sách khách hàng
     public void showCustomer() {
         readUsers();
         System.out.printf("%45s%45s", "", "Danh sách khách hàng");
+        formShowCustomer();
+        for (User user : users) {
+            System.out.println(user.toString());
+        }
+        System.out.printf("%45s%s", "", "------------------------------------------------------------------");
+        System.out.println();
+    }
+    public void formShowCustomer() {
         System.out.println();
         System.out.printf("%45s%s", "", "------------------------------------------------------------------");
         System.out.println();
         System.out.printf("%50s%57s", "Email", "CustomerName");
         System.out.println();
-        System.out.printf("%45s%s", "", "------------------------------------------------------------------");
-        System.out.println();
-        for (User user : users) {
-            System.out.println(user.toString());
-        }
         System.out.printf("%45s%s", "", "------------------------------------------------------------------");
         System.out.println();
     }

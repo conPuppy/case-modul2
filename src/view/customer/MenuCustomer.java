@@ -17,8 +17,16 @@ public class MenuCustomer {
         int choice;
         while (true) {
             try {
-                System.out.println("Menu:\n1. Xem sản phẩm theo loại\n2. Xem sản phẩm theo giá\n3. Tìm kiếm sản phẩm theo tên" +
-                        "\n4. Thêm sản phẩm vào giỏ hàng\n5. Xem giỏ hàng\n6. Đổi mật khẩu\n7. Đổi username\n8. Logout");
+                System.out.println("""
+                        Menu:
+                        1. Xem sản phẩm theo loại
+                        2. Xem sản phẩm theo giá
+                        3. Tìm kiếm sản phẩm theo tên
+                        4. Thêm sản phẩm vào giỏ hàng
+                        5. Xem giỏ hàng
+                        6. Đổi mật khẩu
+                        7. Đổi username
+                        8. Logout""");
                 System.out.print("Enter your choice: ");
                 choice = Integer.parseInt(scanner.nextLine());
                 switch (choice) {
