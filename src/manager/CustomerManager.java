@@ -219,9 +219,6 @@ public class CustomerManager {
         }
     }
 
-
-
-
     //  tạo hàm tìm kiếm theo Email
     public User findUserByEmail(String email) {
         for (User user : users) {

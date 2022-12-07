@@ -2,12 +2,14 @@ package view.admin;
 
 
 import manager.ProductManager;
+import view.product.MenuShowProduct;
 
 import java.util.Scanner;
 
 public class MenuAdmin1 {
     ProductManager productManager = new ProductManager();
     Scanner scanner = new Scanner(System.in);
+    MenuShowProduct menuShowProduct = new MenuShowProduct();
     public void showMenuAdmin1() {
         int choice;
         while (true) {
@@ -20,7 +22,7 @@ public class MenuAdmin1 {
                         productManager.addProduct();
                         break;
                     case 2:
-                        productManager.showTypeProduct();
+                        menuShowProduct.showTypeProduct();
                         break;
                     case 3:
                         productManager.deleteProduct();

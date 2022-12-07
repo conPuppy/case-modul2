@@ -2,12 +2,14 @@ package view.customer;
 
 import manager.CustomerManager;
 import manager.ProductManager;
+import view.product.MenuShowProduct;
 
 import java.util.Scanner;
 
 public class MenuCustomer {
     ProductManager productManager = new ProductManager();
     Scanner scanner = new Scanner(System.in);
+    MenuShowProduct menuShowProduct = new MenuShowProduct();
     CustomerManager customerManager = new CustomerManager(this);
     MenuShowProductByPrice menuShowProductByPrice = new MenuShowProductByPrice();
     //    tạo hàm show menu của Customer sau khi đăng nhập
@@ -20,7 +22,7 @@ public class MenuCustomer {
                 System.out.print("Enter your choice: ");
                 choice = Integer.parseInt(scanner.nextLine());
                 switch (choice) {
-                    case 1 -> productManager.showTypeProduct();
+                    case 1 -> menuShowProduct.showTypeProduct();
                     case 2 -> menuShowProductByPrice.showComparePrice();
                     case 3 -> {
                         System.out.println("Nhập tên sản phẩm muốn tìm: ");

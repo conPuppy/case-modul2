@@ -13,31 +13,6 @@ public class ProductManager {
     static List<Product> products = new ArrayList<>();
     Scanner scanner = new Scanner(System.in);
 
-    //    tạo hàm show danh sách sản phẩm:
-    public void showTypeProduct() {
-        int choice;
-        while (true) {
-            try {
-                System.out.println("Type Product:\n1. All Product\n2. Shower Gel\n3. Body Mist\n4. Back");
-                choice = Integer.parseInt(scanner.nextLine());
-                switch (choice) {
-                    case 1:
-                        showProduct();
-                        break;
-                    case 2:
-                        showShowerGel();
-                        break;
-                    case 3:
-                        showBodyMist();
-                        break;
-                    default:
-                        return;
-                }
-            } catch (Exception e) {
-                System.err.println("Nhập số đê!");
-            }
-        }
-    }
     public void formShowProduct() {
         System.out.println();
         System.out.printf("%45s%s","","----------------------------------------------------------------------");
