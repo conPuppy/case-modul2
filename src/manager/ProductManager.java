@@ -40,10 +40,7 @@ public class ProductManager {
             }
         }
     }
-
-    public void showProduct() {
-        readProduct();
-        System.out.printf("%72s%s","","All Product");
+    public void formShowProduct() {
         System.out.println();
         System.out.printf("%45s%s","","----------------------------------------------------------------------");
         System.out.println();
@@ -51,6 +48,12 @@ public class ProductManager {
         System.out.println();
         System.out.printf("%45s%s","","----------------------------------------------------------------------");
         System.out.println();
+    }
+
+    public void showProduct() {
+        readProduct();
+        System.out.printf("%72s%s","","All Product");
+        formShowProduct();
         for (Product product : products) {
             System.out.println(product.toString());
         }
@@ -60,13 +63,7 @@ public class ProductManager {
     public void showShowerGel() {
         readProduct();
         System.out.printf("%72s%s","","Shower Gel");
-        System.out.println();
-        System.out.printf("%45s%s","","----------------------------------------------------------------------");
-        System.out.println();
-        System.out.printf("%45s%-10s%-20s%-15s%-15s%-30s","", "ID", "Name", "Volume (ml) ", "Amount", "Price");
-        System.out.println();
-        System.out.printf("%45s%s","","----------------------------------------------------------------------");
-        System.out.println();
+        formShowProduct();
         for (Product product : products) {
             if (product instanceof ShowerGel)
                 System.out.println(product);
@@ -77,13 +74,7 @@ public class ProductManager {
     public void showBodyMist() {
         readProduct();
         System.out.printf("%72s%s","","Body Mist");
-        System.out.println();
-        System.out.printf("%45s%s","","----------------------------------------------------------------------");
-        System.out.println();
-        System.out.printf("%45s%-10s%-20s%-15s%-15s%-30s","", "ID", "Name", "Volume (ml) ", "Amount", "Price");
-        System.out.println();
-        System.out.printf("%45s%s","","----------------------------------------------------------------------");
-        System.out.println();
+        formShowProduct();
         for (Product product : products) {
             if (product instanceof BodyMist) {
                 System.out.println(product);
@@ -119,10 +110,8 @@ public class ProductManager {
         }
 //        tạo 1 mảng String để chứa các tên sau khi nối lại không có dấu cách:
         String[] listName = new String[products.size()];
-        for (int i = 0; i < listName.length; i++) {
-            listName[i] = "";
-        }
         for (int i = 0; i < products.size(); i++) {
+            listName[i] = "";
             // tạo 1 mảng String để hứng các phần tử trong mảng động nameAfterSplit
             String[] string = nameAfterSplit.get(i);
             for (String s : string) {
@@ -238,13 +227,7 @@ public class ProductManager {
     public void ascendingPrice() {
         readProduct();
         System.out.printf("%72s%s","","Ascending Price");
-        System.out.println();
-        System.out.printf("%45s%s","","------------------------------------------------------------------");
-        System.out.println();
-        System.out.printf("%45s%-10s%-20s%-15s%-15s%-30s","", "ID", "Name", "Volume (ml) ", "Amount", "Price");
-        System.out.println();
-        System.out.printf("%45s%s","","------------------------------------------------------------------");
-        System.out.println();
+        formShowProduct();
         products.sort(new ComparatorPriceAscending());
         for (Product product : products) {
             System.out.println(product.toString());
@@ -255,16 +238,10 @@ public class ProductManager {
     public void descendingPrice() {
         readProduct();
         System.out.printf("%72s%s","","Descending Price");
-        System.out.println();
-        System.out.printf("%45s%s","","------------------------------------------------------------------");
-        System.out.println();
-        System.out.printf("%45s%-10s%-20s%-15s%-15s%-30s","", "ID", "Name", "Volume (ml) ", "Amount", "Price");
-        System.out.println();
-        System.out.printf("%45s%s","","------------------------------------------------------------------");
-        System.out.println();
+        formShowProduct();
         products.sort(new ComparatorPriceDescending());
         for (Product product : products) {
-            System.out.println(product.toString());
+            System.out.println(product);
         }
     }
 
@@ -272,16 +249,10 @@ public class ProductManager {
     public void lowerPrice() {
         readProduct();
         System.out.printf("%72s%s","","Lower than 100k Price");
-        System.out.println();
-        System.out.printf("%45s%s","","------------------------------------------------------------------");
-        System.out.println();
-        System.out.printf("%45s%-10s%-20s%-15s%-15s%-30s","", "ID", "Name", "Volume (ml) ", "Amount", "Price");
-        System.out.println();
-        System.out.printf("%45s%s","","------------------------------------------------------------------");
-        System.out.println();
+        formShowProduct();
         for (Product product : products) {
-            if (product.getPrice() < 100) {
-                System.out.println(product.toString());
+            if (product.getPrice() < 100000) {
+                System.out.println(product);
             }
         }
     }
@@ -290,16 +261,10 @@ public class ProductManager {
     public void betweenPrice() {
         readProduct();
         System.out.printf("%72s%s","","Between 100k and 300k Price");
-        System.out.println();
-        System.out.printf("%45s%s","","------------------------------------------------------------------");
-        System.out.println();
-        System.out.printf("%45s%-10s%-20s%-15s%-15s%-30s","", "ID", "Name", "Volume (ml) ", "Amount", "Price");
-        System.out.println();
-        System.out.printf("%45s%s","","------------------------------------------------------------------");
-        System.out.println();
+        formShowProduct();
         for (Product product : products) {
-            if (product.getPrice() >= 100 && product.getPrice() <= 300) {
-                System.out.println(product.toString());
+            if (product.getPrice() >= 100000 && product.getPrice() <= 300000) {
+                System.out.println(product);
             }
         }
     }
@@ -308,16 +273,10 @@ public class ProductManager {
     public void higherPrice() {
         readProduct();
         System.out.printf("%72s%s","","Higher than 300k Price");
-        System.out.println();
-        System.out.printf("%45s%s","","------------------------------------------------------------------");
-        System.out.println();
-        System.out.printf("%45s%-10s%-20s%-15s%-15s%-30s","", "ID", "Name", "Volume (ml) ", "Amount", "Price");
-        System.out.println();
-        System.out.printf("%45s%s","","------------------------------------------------------------------");
-        System.out.println();
+        formShowProduct();
         for (Product product : products) {
-            if (product.getPrice() > 300) {
-                System.out.println(product.toString());
+            if (product.getPrice() > 300000) {
+                System.out.println(product);
             }
         }
     }
@@ -332,10 +291,10 @@ public class ProductManager {
     public void readProduct() {
         try {
             Product[] products = (Product[]) ReadWriteFile.readFromFile("product.txt");
-            this.products = products != null ? new ArrayList<>(Arrays.asList(products)) : new ArrayList<>();
+            ProductManager.products = products != null ? new ArrayList<>(Arrays.asList(products)) : new ArrayList<>();
         } catch (Exception e) {
             e.printStackTrace();
-            this.products = new ArrayList<>();
+            ProductManager.products = new ArrayList<>();
         }
     }
 
