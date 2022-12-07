@@ -3,6 +3,7 @@ package manager;
 import io.ReadWriteFile;
 import model.Product;
 import model.User;
+import view.customer.MenuCustomer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,46 +14,15 @@ public class CustomerManager {
     ProductManager productManager = new ProductManager();
     List<User> users = new ArrayList<>();
     static Scanner scanner = new Scanner(System.in);
+    MenuCustomer menuCustomer;
     int index;
 
+    public CustomerManager() {
+        menuCustomer = new MenuCustomer();
+    }
 
-    //    tạo hàm show menu của Customer sau khi đăng nhập
-    public void showMenuCustomer() {
-        int choice;
-        while (true) {
-            try {
-                System.out.println("Menu:\n1. Xem sản phẩm theo loại\n2. Xem sản phẩm theo giá\n3. Tìm kiếm sản phẩm theo tên" +
-                        "\n4. Thêm sản phẩm vào giỏ hàng\n5. Xem giỏ hàng\n6. Đổi mật khẩu\n7. Đổi username\n8. Logout");
-                System.out.print("Enter your choice: ");
-                choice = Integer.parseInt(scanner.nextLine());
-                switch (choice) {
-                    case 1 -> productManager.showTypeProduct();
-                    case 2 -> showComparePrice();
-                    case 3 -> {
-                        System.out.println("Nhập tên sản phẩm muốn tìm: ");
-                        productManager.searchProductByName();
-                    }
-                    case 4 -> updateCart();
-                    case 5 -> showCart();
-                    case 6 -> {
-                        if(changePassword()) return;
-                    }
-                    case 7 -> {
-                        if(changeUserName()) {
-                            System.exit(0);
-                        } else {
-                            return;
-                        }
-                    }
-                    default -> {
-                        writeUsers();
-                        return;
-                    }
-                }
-            } catch (Exception e) {
-                System.err.println("Nhập số đê!");
-            }
-        }
+    public CustomerManager(MenuCustomer menuCustomer) {
+        this.menuCustomer = menuCustomer;
     }
 
     //    tạo hàm chọn sản phẩm vào giỏ hàng:
@@ -119,54 +89,21 @@ public class CustomerManager {
     //    tạo hàm hiển thị danh sách khách hàng
     public void showCustomer() {
         readUsers();
-        System.out.println("-------------------------------------------------");
-        System.out.printf("%-30s%-20s", "Email", "CustomerName");
+        System.out.printf("%45s%45s", "", "Danh sách khách hàng");
         System.out.println();
-        System.out.println("-------------------------------------------------");
+        System.out.printf("%45s%s", "", "------------------------------------------------------------------");
+        System.out.println();
+        System.out.printf("%50s%57s", "Email", "CustomerName");
+        System.out.println();
+        System.out.printf("%45s%s", "", "------------------------------------------------------------------");
+        System.out.println();
         for (User user : users) {
             System.out.println(user.toString());
         }
+        System.out.printf("%45s%s", "", "------------------------------------------------------------------");
+        System.out.println();
     }
 
-    //    tạo hàm hiển thị lọc giá từ thấp đến cao và ngược lại:
-    public void showComparePrice() {
-        int choice;
-        while (true) {
-            try {
-                System.out.println("""
-                        Lọc sản phẩm theo giá:
-                        1. Các sản phẩm có giá từ thấp đến cao
-                        2. Các sản phẩm có giá từ cao xuống thấp
-                        3. Giá thấp hơn 100k
-                        4. Giá từ 100k đến 300k
-                        5. Giá lớn hơn 300k
-                        6. Back
-                        """);
-                choice = Integer.parseInt(scanner.nextLine());
-                switch (choice) {
-                    case 1:
-                        productManager.ascendingPrice();
-                        break;
-                    case 2:
-                        productManager.descendingPrice();
-                        break;
-                    case 3:
-                        productManager.lowerPrice();
-                        break;
-                    case 4:
-                        productManager.betweenPrice();
-                        break;
-                    case 5:
-                        productManager.higherPrice();
-                        break;
-                    default:
-                        return;
-                }
-            } catch (Exception e) {
-                System.err.println("Nhập số đi nha!");
-            }
-        }
-    }
 
     //  tạo hàm đăng ký
     public void register() {
@@ -185,9 +122,20 @@ public class CustomerManager {
             String password = InputString.inputString("[a-zA-Z0-9]+");
             if (checkLogin(name, password)) {
                 System.out.println("Đăng nhập thành công!");
-                showMenuCustomer();
+                menuCustomer.showMenuCustomer();
+                System.out.println("Đăng nhập thành công!");
             } else System.out.println("Đăng nhập thất bại!");
         } else System.out.println("Không tồn tại tên tài khoản!Đăng nhập thất bại!");
+    }
+    //    tạo hàm check tài khoản đăng nhập
+    public boolean checkLogin(String name, String password) {
+        for (int i = 0; i < users.size(); i++) {
+            if (name.equals(users.get(i).getName()) && password.equals(users.get(i).getPassword())) {
+                index = i;
+                return true;
+            }
+        }
+        return false;
     }
 
     // tạo hàm đổi mật khẩu:
@@ -220,7 +168,18 @@ public class CustomerManager {
         }
         return false;
     }
-
+//    tạo hàm xoá tài khoản khách hàng cho admin:
+    public void deleteCustomer() {
+        readUsers();
+        System.out.println("Nhập tên tài khoản Customer bạn muốn xoá: ");
+        String name = InputString.inputString("[a-zA-Z]([a-zA-Z0-9])+");
+        if(findUserByName(name)!=null) {
+            users.remove(x);
+            System.out.println("Xoá tài khoản "+ name +" thành công!");
+        } else System.out.println("Không tìm thấy tài khoản Customer có tên: "+ name);
+        writeUsers();
+    }
+//  tạo hàm tạo tài khoản khách hàng:
     public User createCustomer() {
 //        tạo đối tượng user là khách hàng:
         System.out.printf("%-20s", "Nhập email đăng ký tài khoản: ");
@@ -261,16 +220,7 @@ public class CustomerManager {
     }
 
 
-    //    tạo hàm check tài khoản đăng nhập
-    public boolean checkLogin(String name, String password) {
-        for (int i = 0; i < users.size(); i++) {
-            if (name.equals(users.get(i).getName()) && password.equals(users.get(i).getPassword())) {
-                index = i;
-                return true;
-            }
-        }
-        return false;
-    }
+
 
     //  tạo hàm tìm kiếm theo Email
     public User findUserByEmail(String email) {
@@ -283,10 +233,12 @@ public class CustomerManager {
     }
 
     //  tạo hàm tìm kiếm theo tên
+    int x;
     public User findUserByName(String name) {
-        for (User user : users) {
-            if (user.getName().equals(name)) {
-                return user;
+        for (int i = 0; i< users.size();i++) {
+            if (users.get(i).getName().equals(name)) {
+                x = i;
+                return users.get(i);
             }
         }
         return null;

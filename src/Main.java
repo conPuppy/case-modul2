@@ -1,11 +1,10 @@
-import manager.CustomerManager;
-import manager.Manager;
 
-import java.util.Scanner;
+import view.Menu;
+
 
 public class Main {
     public static void main(String[] args) {
-        Manager manager = new Manager();
-        manager.showMenu();
+        Menu menu = new Menu();
+        menu.showMenu();
     }
 }

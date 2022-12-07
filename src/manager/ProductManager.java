@@ -25,11 +25,9 @@ public class ProductManager {
                         showProduct();
                         break;
                     case 2:
-                        System.out.println("--------------------------< Shower Gel >---------------------------");
                         showShowerGel();
                         break;
                     case 3:
-                        System.out.println("--------------------------< Body Mist >----------------------------");
                         showBodyMist();
                         break;
                     default:

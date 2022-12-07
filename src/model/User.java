@@ -63,6 +63,6 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("%-30s%-20s",email,name);
+        return String.format("%45s%s%40s", "",email,name);
     }
 }
