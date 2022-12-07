@@ -22,7 +22,7 @@ public class CustomerManager {
         while (true) {
             try {
                 System.out.println("Menu:\n1. Xem sản phẩm theo loại\n2. Xem sản phẩm theo giá\n3. Tìm kiếm sản phẩm theo tên" +
-                        "\n4. Thêm sản phẩm vào giỏ hàng\n5. Xem giỏ hàng\n6. Logout");
+                        "\n4. Thêm sản phẩm vào giỏ hàng\n5. Xem giỏ hàng\n6. Đổi mật khẩu\n7. Đổi username\n8. Logout");
                 System.out.print("Enter your choice: ");
                 choice = Integer.parseInt(scanner.nextLine());
                 switch (choice) {
@@ -34,6 +34,16 @@ public class CustomerManager {
                     }
                     case 4 -> updateCart();
                     case 5 -> showCart();
+                    case 6 -> {
+                        if(changePassword()) return;
+                    }
+                    case 7 -> {
+                        if(changeUserName()) {
+                            System.exit(0);
+                        } else {
+                            return;
+                        }
+                    }
                     default -> {
                         writeUsers();
                         return;
@@ -178,6 +188,37 @@ public class CustomerManager {
                 showMenuCustomer();
             } else System.out.println("Đăng nhập thất bại!");
         } else System.out.println("Không tồn tại tên tài khoản!Đăng nhập thất bại!");
+    }
+
+    // tạo hàm đổi mật khẩu:
+    public boolean changePassword() {
+        readUsers();
+        System.out.println("Nhập lại mật khẩu cũ: ");
+        String password = InputString.inputString("[a-zA-Z0-9]+");
+        if (password.equals(users.get(index).getPassword())) {
+            System.out.println("Nhập mật khẩu mới: ");
+            String newPassword = InputString.inputString("[a-zA-Z0-9]+");
+            users.get(index).setPassword(newPassword);
+            writeUsers();
+            System.out.println("Đổi mật khẩu thành công!");
+            return true;
+        }
+        return false;
+    }
+//    tạo hàm đổi username:
+    public boolean changeUserName() {
+        readUsers();
+        System.out.println("Nhập lại mật khẩu cũ: ");
+        String password = InputString.inputString("[a-zA-Z0-9]+");
+        if (password.equals(users.get(index).getPassword())) {
+            System.out.println("Nhập username mới: ");
+            String newUserName = InputString.inputString("[a-zA-Z]([a-zA-Z0-9])+");
+            users.get(index).setName(newUserName);
+            writeUsers();
+            System.out.println("Đổi UserName thành công!");
+            return true;
+        }
+        return false;
     }
 
     public User createCustomer() {

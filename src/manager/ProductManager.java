@@ -45,11 +45,11 @@ public class ProductManager {
         readProduct();
         System.out.printf("%72s%s","","All Product");
         System.out.println();
-        System.out.printf("%45s%s","","------------------------------------------------------------------");
+        System.out.printf("%45s%s","","----------------------------------------------------------------------");
         System.out.println();
         System.out.printf("%45s%-10s%-20s%-15s%-15s%-30s","", "ID", "Name", "Volume (ml) ", "Amount", "Price");
         System.out.println();
-        System.out.printf("%45s%s","","------------------------------------------------------------------");
+        System.out.printf("%45s%s","","----------------------------------------------------------------------");
         System.out.println();
         for (Product product : products) {
             System.out.println(product.toString());
@@ -61,11 +61,11 @@ public class ProductManager {
         readProduct();
         System.out.printf("%72s%s","","Shower Gel");
         System.out.println();
-        System.out.printf("%45s%s","","------------------------------------------------------------------");
+        System.out.printf("%45s%s","","----------------------------------------------------------------------");
         System.out.println();
         System.out.printf("%45s%-10s%-20s%-15s%-15s%-30s","", "ID", "Name", "Volume (ml) ", "Amount", "Price");
         System.out.println();
-        System.out.printf("%45s%s","","------------------------------------------------------------------");
+        System.out.printf("%45s%s","","----------------------------------------------------------------------");
         System.out.println();
         for (Product product : products) {
             if (product instanceof ShowerGel)
@@ -78,11 +78,11 @@ public class ProductManager {
         readProduct();
         System.out.printf("%72s%s","","Body Mist");
         System.out.println();
-        System.out.printf("%45s%s","","------------------------------------------------------------------");
+        System.out.printf("%45s%s","","----------------------------------------------------------------------");
         System.out.println();
         System.out.printf("%45s%-10s%-20s%-15s%-15s%-30s","", "ID", "Name", "Volume (ml) ", "Amount", "Price");
         System.out.println();
-        System.out.printf("%45s%s","","------------------------------------------------------------------");
+        System.out.printf("%45s%s","","----------------------------------------------------------------------");
         System.out.println();
         for (Product product : products) {
             if (product instanceof BodyMist) {
@@ -100,6 +100,7 @@ public class ProductManager {
 
     //    tạo hàm tìm kiếm sản phẩm theo tên cho khách hàng:
     public void searchProductByName() {
+        readProduct();
         String nameSearch = InputString.inputString("^([a-zA-Z\\s])+");
 //        tạo 1 mảng String để hứng nameSearch sau khi split
         String[] nameSearchAfterSplit = nameSearch.split(" ");
@@ -340,15 +341,21 @@ public class ProductManager {
 
     //  menu tạo sản phẩm là sữa tắm hoặc bodymist:
     public Product menuCreateProduct() {
-        System.out.println("1. ShowerGel\n2. BodyMist");
-        int choice = Integer.parseInt(scanner.nextLine());
-        if (choice == 1) {
-            return createProduct(true);
-        } else if (choice == 2) {
-            return createProduct(false);
-        } else {
-            System.out.println("Chỉ nhập 1 hoặc 2");
-            return null;
+        while (true) {
+            try {
+                System.out.println("1. ShowerGel\n2. BodyMist");
+                int choice = Integer.parseInt(scanner.nextLine());
+                if (choice == 1) {
+                    return createProduct(true);
+                } else if (choice == 2) {
+                    return createProduct(false);
+                } else {
+                    System.out.println("Chỉ nhập 1 hoặc 2");
+                    return null;
+                }
+            }catch (Exception e) {
+                System.err.println("Chỉ nhập số 1 hoặc 2!");
+            }
         }
     }
 
@@ -395,12 +402,36 @@ public class ProductManager {
     public Product createProduct(boolean isShowerGel) {
         System.out.printf("%-20s", "Nhập tên sản phẩm: ");
         String name = InputString.inputString("^([a-zA-Z\\s])+");
-        System.out.printf("%-20s", "Nhập dung tích sản phẩm: ");
-        int volume = Integer.parseInt(scanner.nextLine());
-        System.out.printf("%-20s", "Nhập số lượng sản phẩm: ");
-        int amount = Integer.parseInt(scanner.nextLine());
-        System.out.printf("%-20s", "Nhập giá sản phẩm: ");
-        double price = Double.parseDouble(scanner.nextLine());
+        int volume;
+        int amount;
+        double price;
+        do {
+            try {
+                System.out.printf("%-20s", "Nhập dung tích sản phẩm: ");
+                volume = Integer.parseInt(scanner.nextLine());
+                break;
+            } catch (Exception e) {
+                System.err.println("Dung tích phải nhập số!");
+            }
+        } while (true);
+        do {
+            try {
+                System.out.printf("%-20s", "Nhập số lượng sản phẩm: ");
+                amount = Integer.parseInt(scanner.nextLine());
+                break;
+            } catch (Exception e) {
+                System.err.println("Số lượng sản phẩm phải nhập số!");
+            }
+        } while(true);
+        do{
+            try {
+                System.out.printf("%-20s", "Nhập giá sản phẩm: ");
+                price = Double.parseDouble(scanner.nextLine());
+                break;
+            } catch (Exception e) {
+                System.err.println("Nhập giá phải nhập số!");
+            }
+        } while (true);
         if (isShowerGel) {
             return new ShowerGel(createID(true), name, volume, amount, price);
         } else return new BodyMist(createID(false), name, volume, amount, price);
